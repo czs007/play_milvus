@@ -134,6 +134,7 @@ if __name__ == '__main__':
         collection = prepare_collection(dataset)
         if index:
             create_index(collection, dataset, index, False)
+        loop_index_monitor(0.2)
         confirm_collection_index(collection)
     finally:
         close()
