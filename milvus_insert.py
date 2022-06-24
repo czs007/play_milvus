@@ -22,8 +22,8 @@ from pymilvus import (
 from common import *
 
 ID_COUNTER = 0
-NUM_FILES = 250
-PARTITION_NUM = 4
+NUM_FILES = 1
+PARTITION_NUM = 1
 
 sift_dir_path = "/czsdata/sift1b/"
 sift_dir_path = "/test/milvus/raw_data/sift1b/"

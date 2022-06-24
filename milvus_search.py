@@ -30,12 +30,14 @@ EF_SEARCHS = [50, 64, 80, 100, 128, 168, 200, 256]
 # EF_SEARCHS = [100, 128, 168, 200, 256]
 # EF_SEARCHS = [150]
 NPROBES = [4, 6, 8, 12, 16, 20, 24, 32, 40, 50, 64, 128]
-# NPROBES = [16]
+NPROBES = [16]
 
 TOPK = 50
+TOPK = 1000
 BNQ = 10000
 NQ = [1, 10, 100, 1000, 10000]
 # NQ = [1,10,100]
+NQ = [1,10]
 QueryFName = "query.npy"
 RUN_NUM = 5
 ALL_QPS = 0.0
@@ -103,20 +105,22 @@ def search_collection(host, dataset, indextype):
         fmt_str = "average_time, qps: "
         print(fmt_str)
         print(aver_time, qps)
+        print(all_ids)
         all_ids = []
         for hits in result:
             all_ids.append(list(hits.ids))
+        print(all_ids)
         with open("result.txt", 'w') as f:
-            f.write(json.dumps(all_ids))
+            if len(all_ids) == 0:
+                f.write("empty")
+            else:
+                f.write("not empty")
+                #f.write(json.dumps(all_ids))
         return
 
     if not plist:
         raise_exception("wrong dataset")
 
-    f = open("./result.txt")
-    dataset_result = f.read()
-    f.close()
-    dataset_result = json.loads(dataset_result)
     for nq in NQ:
         query_list = queryData.tolist()[:nq]
         for s_p in plist:
@@ -130,16 +134,11 @@ def search_collection(host, dataset, indextype):
                 search_time = time.time() - start
                 run_time = run_time + search_time
                 run_counter = run_counter + 1
-                print("search cost:", search_time)
+                print("search cost2:", search_time)
             all_ids = []
             for hits in result:
                 all_ids.append(list(hits.ids))
-            aver_time = run_time * 1.0 / RUN_NUM
-            qps = nq*1.0/aver_time
-            ALL_QPS = ALL_QPS + qps
-            print("nq: %s, %s: %s" % (nq, param_key, s_p))
-            print("average_time\t, qps\t, recall: ")
-            print(aver_time, qps, get_recall(dataset_result[:nq], all_ids))
+            print("all_ids:", all_ids)
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
